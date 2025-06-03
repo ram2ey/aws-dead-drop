@@ -6,12 +6,12 @@ A secure, time-based file sharing system inspired by the concept of a "dead drop
 
 ## 📦 Features
 
-- 🔐 **Upload & Encrypt** files securely
-- ⏳ **Delay delivery** for a specific time (e.g., 10 minutes from now)
-- 🕒 **Auto-expire** files after a set time window
-- ☁️ Fully serverless using AWS Lambda, S3, Step Functions, and API Gateway
-- 🧑‍💻 HTML + JavaScript frontend for easy uploads
-- 🆓 100% free-tier compatible!
+-  Upload & Encrypt files securely
+-  Delay delivery for a specific time (e.g., 10 minutes from now)
+-  Auto-expire files after a set time window
+-  Fully serverless using AWS Lambda, S3, Step Functions, and API Gateway
+-  HTML + JavaScript frontend for easy uploads
+-  100% free-tier compatible!
 
 ---
 
