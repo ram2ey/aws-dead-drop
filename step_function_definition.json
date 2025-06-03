@@ -1,0 +1,26 @@
+{
+  "Comment": "Time-controlled file release and deletion",
+  "StartAt": "WaitUntilRelease",
+  "States": {
+    "WaitUntilRelease": {
+      "Type": "Wait",
+      "TimestampPath": "$.releaseTime",
+      "Next": "MarkAsAvailable"
+    },
+    "MarkAsAvailable": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-north-1:233602497165:function:MarkFileAvailable",
+      "Next": "WaitUntilExpiry"
+    },
+    "WaitUntilExpiry": {
+      "Type": "Wait",
+      "TimestampPath": "$.expireTime",
+      "Next": "DeleteFile"
+    },
+    "DeleteFile": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-north-1:233602497165:function:DeleteFileAndMetadata",
+      "End": true
+    }
+  }
+}

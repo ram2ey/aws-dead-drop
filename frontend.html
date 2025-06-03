@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dead Drop Uploader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1a1f36, #2f3b52);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #2d3548;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      font-size: 1.8em;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"],
+    input[type="number"],
+    button {
+      width: 100%;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+
+    input[type="file"],
+    input[type="number"] {
+      background-color: #394054;
+      color: #fff;
+    }
+
+    input[type="number"]::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      background-color: #00b894;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00a383;
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      color: #d1d1d1;
+      word-break: break-word;
+    }
+
+    .success {
+      color: #00ffae;
+    }
+
+    .error {
+      color: #ff7675;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Dead Drop File Upload</h2>
+
+    <input type="file" id="fileInput" />
+    <input type="number" id="delay" placeholder="Delay (minutes)" />
+    <input type="number" id="expire" placeholder="Expire After (minutes)" />
+    <button onclick="uploadFile()">Upload File</button>
+
+    <div id="statusText" class="status"></div>
+  </div>
+
+  <script>
+    const apiUrl = 'https://2nwouyg87a.execute-api.eu-north-1.amazonaws.com/v1/upload'; // Replace with your actual API Gateway URL
+
+    async function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const delay = document.getElementById('delay').value || 0;
+      const expire = document.getElementById('expire').value || 1440;
+      const statusText = document.getElementById('statusText');
+      statusText.textContent = '';
+      statusText.className = 'status';
+
+      if (fileInput.files.length === 0) {
+        statusText.textContent = 'Please select a file to upload.';
+        statusText.classList.add('error');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function () {
+        const base64Data = reader.result.split(',')[1]; // Remove data:... prefix
+
+        const body = {
+          file: base64Data,
+          delay: delay.toString(),
+          expire: expire.toString()
+        };
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            statusText.innerHTML = `✅ File uploaded!<br><strong>File ID:</strong> ${result.fileId}`;
+            statusText.classList.add('success');
+          } else {
+            throw new Error(result.message || 'Upload failed');
+          }
+        } catch (err) {
+          statusText.textContent = '❌ Error: ' + err.message;
+          statusText.classList.add('error');
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
