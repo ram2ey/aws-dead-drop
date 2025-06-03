@@ -39,5 +39,5 @@ A secure, time-based file sharing system inspired by the concept of a "dead drop
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/aws-dead-drop.git
+git clone https://github.com/ram2ey/aws-dead-drop.git
 cd aws-dead-drop
